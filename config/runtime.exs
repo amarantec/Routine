@@ -36,7 +36,7 @@ case config_env() do
     db_username = System.get_env("POSTGRES_USER") || raise "POSTGRES_USER environment variable not set."
     db_password = System.get_env("POSTGRES_PASSWORD") || raise "POSTGRES_PASSWORD environment variable not set."
     db_host = System.get_env("DB_HOST") || raise "DB_HOST environment variable not set."
-    db_name = System.get_env("POSTGRES_DB") || raise "POSTGRES_DB environment variable not set."
+    db_name = System.get_env("DB_TEST") || raise "DB_TEST environment variable not set."
 
     config :routine, Routine.Repo,
       username: db_username,
