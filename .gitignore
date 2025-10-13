@@ -38,3 +38,11 @@ npm-debug.log
 .env
 postgresql.sh
 run.sh
+test.sh
+build.sh
+network.sh
+routine-app.log
+start.sh
+bck/
+scripts/
+TODO
