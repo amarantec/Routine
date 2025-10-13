@@ -29,6 +29,9 @@ jobs:
     env:
       DB_HOST: localhost
       DB_PORT: 5432
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
       MIX_ENV: test
 
     steps:
