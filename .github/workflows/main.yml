@@ -12,6 +12,15 @@ jobs:
   lint:
     name: Lint Code
     runs-on: ubuntu-latest
+    
+    env:
+      DB_HOST: localhost
+      DB_PORT: 5432
+      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+      POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+      DB_TEST: ${{ secrets.DB_TEST }}
+      MIX_ENV: test
 
     steps:
       - name: Checkout code
