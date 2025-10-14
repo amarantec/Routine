@@ -4,10 +4,15 @@ on:
   push:
     branches:
       - main
+      - feature/*
+      - bugfix/*
+      - hotfix/*
   pull_request:
     branches:
       - main
-      - feature
+      - feature/*
+      - bugfix/*
+      - hotfix/*
 jobs:
   lint:
     name: Lint Code
