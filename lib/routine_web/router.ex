@@ -54,6 +54,11 @@ defmodule RoutineWeb.Router do
       on_mount: [{RoutineWeb.UserAuth, :require_authenticated}] do
       live "/users/settings", UserLive.Settings, :edit
       live "/users/settings/confirm-email/:token", UserLive.Settings, :confirm_email
+
+      live "/tasks", TaskLive.Index, :index
+      live "/tasks/new", TaskLive.Form, :new
+      live "/tasks/:id", TaskLive.Show, :show
+      live "/tasks/:id/edit", TaskLive.Form, :edit
     end
 
     post "/users/update-password", UserSessionController, :update_password
