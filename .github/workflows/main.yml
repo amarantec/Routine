@@ -117,7 +117,7 @@ jobs:
           password: ${{ secrets.GHCR_PASSWORD }}
       
       - name: Build and Push Docker image
-        uses: docker/build-push-actions@v5 # Action oficial para build e push
+        uses: docker/build-push-action@v6 # Action oficial para build e push
         with:
           context: .
           file: deploy/Dockerfile
