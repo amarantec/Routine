@@ -126,5 +126,5 @@ jobs:
           file: deploy/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:$IMAGE_TAG
-            ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME:${{ github.sha }}  # Tag extra com commit SHA para versionamento 
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME}}:${{ env.IMAGE_TAG }}
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME}}:${{ github.sha }}  # Tag extra com commit SHA para versionamento 
