@@ -23,7 +23,7 @@ defmodule RoutineWeb.TaskLive.Show do
       <.list>
         <:item title="Description">{@task.description}</:item>
         <:item title="Done">{@task.done}</:item>
-        <:item title="Redline"> <%= Calendar.strftime(@task.redline, "%H:%M - %d/%m/%Y") %> </:item>
+        <:item title="Redline">{Calendar.strftime(@task.redline, "%H:%M - %d/%m/%Y")}</:item>
       </.list>
     </Layouts.app>
     """

@@ -24,7 +24,9 @@ defmodule RoutineWeb.TaskLive.Index do
         <:col :let={{_id, task}} label="Name">{task.name}</:col>
         <:col :let={{_id, task}} label="Description">{task.description}</:col>
         <:col :let={{_id, task}} label="Done">{task.done}</:col>
-        <:col :let={{_id, task}} label="Redline"> <%= Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y") %> </:col>
+        <:col :let={{_id, task}} label="Redline">
+          {Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y")}
+        </:col>
         <:action :let={{_id, task}}>
           <div class="sr-only">
             <.link navigate={~p"/tasks/#{task}"}>Show</.link>

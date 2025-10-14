@@ -29,7 +29,13 @@ defmodule Routine.TasksTest do
     end
 
     test "create_task/2 with valid data creates a task" do
-      valid_attrs = %{name: "some name", done: true, description: "some description", redline: ~N[2025-10-13 18:24:00.000000]}
+      valid_attrs = %{
+        name: "some name",
+        done: true,
+        description: "some description",
+        redline: ~N[2025-10-13 18:24:00.000000]
+      }
+
       scope = user_scope_fixture()
 
       assert {:ok, %Task{} = task} = Tasks.create_task(scope, valid_attrs)
@@ -48,7 +54,13 @@ defmodule Routine.TasksTest do
     test "update_task/3 with valid data updates the task" do
       scope = user_scope_fixture()
       task = task_fixture(scope)
-      update_attrs = %{name: "some updated name", done: false, description: "some updated description", redline: ~N[2025-10-14 18:24:00.000000]}
+
+      update_attrs = %{
+        name: "some updated name",
+        done: false,
+        description: "some updated description",
+        redline: ~N[2025-10-14 18:24:00.000000]
+      }
 
       assert {:ok, %Task{} = task} = Tasks.update_task(scope, task, update_attrs)
       assert task.name == "some updated name"

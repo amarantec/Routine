@@ -4,8 +4,17 @@ defmodule RoutineWeb.TaskLiveTest do
   import Phoenix.LiveViewTest
   import Routine.TasksFixtures
 
-  @create_attrs %{name: "some name", description: "some description", redline: ~N[2025-10-13T18:24:00.000000]}
-  @update_attrs %{name: "some updated name", done: :false, description: "some updated description", redline: ~N[2025-10-14T18:24:00.000000]}
+  @create_attrs %{
+    name: "some name",
+    description: "some description",
+    redline: ~N[2025-10-13T18:24:00.000000]
+  }
+  @update_attrs %{
+    name: "some updated name",
+    done: false,
+    description: "some updated description",
+    redline: ~N[2025-10-14T18:24:00.000000]
+  }
   @invalid_attrs %{name: nil, description: nil, redline: nil}
 
   setup :register_and_log_in_user
