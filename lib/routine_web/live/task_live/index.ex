@@ -16,32 +16,27 @@ defmodule RoutineWeb.TaskLive.Index do
         </:actions>
       </.header>
 
-      <.table
-        id="tasks"
-        rows={@streams.tasks}
-        row_click={fn {_id, task} -> JS.navigate(~p"/tasks/#{task}") end}
-      >
-        <:col :let={{_id, task}} label="Name">{task.name}</:col>
-        <:col :let={{_id, task}} label="Description">{task.description}</:col>
-        <:col :let={{_id, task}} label="Done">{task.done}</:col>
-        <:col :let={{_id, task}} label="Redline">
-          {Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y")}
-        </:col>
-        <:action :let={{_id, task}}>
-          <div class="sr-only">
-            <.link navigate={~p"/tasks/#{task}"}>Show</.link>
+      <div class="grid grid-cols-3 gap-5">
+        <%= for task <- @tasks do %>
+          <div class={"card border-2 rounded-lg shadow p-5 " <>
+            (if task.done == :true, do: "border-green-500", else: if NaiveDateTime.local_now() > task.redline, do: "border-red-600", else: "border-white")}>
+            <.link class="text-white text-lg" navigate={~p"/tasks/#{task.id}"}>{task.name}</.link>
+            <p class="text-red-400 text-sm">{Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y")}</p>
+            <p class="text-white text-lg">
+              Done?
+              <%= if task.done == :true do %>
+                <.icon name="hero-check-circle" class="text-green-500 text-sm" />
+              <% else %>
+                <%= if NaiveDateTime.local_now() > task.redline do %>
+                  <.icon name="hero-exclamation-circle" class="text-red-600 text-sm" />
+                <% else %>
+                  <.icon name="hero-minus-circle" class="text-white text-sm" />
+                <% end %>
+              <% end %>
+            </p>
           </div>
-          <.link navigate={~p"/tasks/#{task}/edit"}>Edit</.link>
-        </:action>
-        <:action :let={{id, task}}>
-          <.link
-            phx-click={JS.push("delete", value: %{id: task.id}) |> hide("##{id}")}
-            data-confirm="Are you sure?"
-          >
-            Delete
-          </.link>
-        </:action>
-      </.table>
+        <% end %>
+      </div>
     </Layouts.app>
     """
   end
@@ -55,7 +50,7 @@ defmodule RoutineWeb.TaskLive.Index do
     {:ok,
      socket
      |> assign(:page_title, "Listing Tasks")
-     |> stream(:tasks, list_tasks(socket.assigns.current_scope))}
+     |> assign(:tasks, list_tasks(socket.assigns.current_scope))}
   end
 
   @impl true
