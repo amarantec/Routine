@@ -30,9 +30,9 @@ defmodule RoutineWeb.TaskLive.Index do
                 <%= if NaiveDateTime.local_now() > task.redline do %>
                   <.icon name="hero-exclamation-circle" class="text-red-600 text-sm" />
                 <% else %>
-                  <.button phx-click="mark-done" phx-value-task={task.id}>
+                  <.link phx-click="mark-done" phx-value-task={task.id}>
                     <.icon name="hero-minus-circle" class="text-white text-sm" />
-                  </.button>
+                  </.link>
                 <% end %>
               <% end %>
             </p>
