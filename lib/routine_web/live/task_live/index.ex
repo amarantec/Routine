@@ -74,15 +74,19 @@ defmodule RoutineWeb.TaskLive.Index do
       case Tasks.get_task!(socket.assigns.current_scope, task_id) do
         nil ->
           {:noreply, put_flash(socket, :error, "Error, Task not found")}
+
         task ->
-          case Tasks.update_task(socket.assigns.current_scope, task, %{done: :true}) do
+          case Tasks.update_task(socket.assigns.current_scope, task, %{done: true}) do
             {:ok, updated_task} ->
               tasks = Tasks.list_tasks(socket.assigns.current_scope)
+
               {:noreply,
-                socket
-                |> assign(:tasks, tasks)
-                |> put_flash(:success, "Task #{updated_task.name} completed!")}
-            {:error, _changeset} -> {socket, :error, "Could not mark this task as done."}
+               socket
+               |> assign(:tasks, tasks)
+               |> put_flash(:success, "Task #{updated_task.name} completed!")}
+
+            {:error, _changeset} ->
+              {socket, :error, "Could not mark this task as done."}
           end
       end
   end
