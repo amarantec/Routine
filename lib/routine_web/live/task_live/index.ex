@@ -19,7 +19,7 @@ defmodule RoutineWeb.TaskLive.Index do
       <div class="grid grid-cols-3 gap-5">
         <%= for task <- @tasks do %>
           <div class={"card border-2 rounded-lg shadow p-5 " <>
-            (if task.done == :true, do: "border-green-500", else: if NaiveDateTime.local_now() > task.redline, do: "border-red-600", else: "border-white")}>
+            (if task.done == :true, do: "border-green-500", else: (if NaiveDateTime.local_now() > task.redline, do: "border-red-600", else: "border-white"))}>
             <.link class="text-white text-lg" navigate={~p"/tasks/#{task.id}"}>{task.name}</.link>
             <p class="text-red-400 text-sm">{Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y")}</p>
             <p class="text-white text-lg">
@@ -30,7 +30,9 @@ defmodule RoutineWeb.TaskLive.Index do
                 <%= if NaiveDateTime.local_now() > task.redline do %>
                   <.icon name="hero-exclamation-circle" class="text-red-600 text-sm" />
                 <% else %>
-                  <.icon name="hero-minus-circle" class="text-white text-sm" />
+                  <.button phx-click="mark-done" phx-value-task={task.id}>
+                    <.icon name="hero-minus-circle" class="text-white text-sm" />
+                  </.button>
                 <% end %>
               <% end %>
             </p>
@@ -65,6 +67,24 @@ defmodule RoutineWeb.TaskLive.Index do
   def handle_info({type, %Routine.Tasks.Task{}}, socket)
       when type in [:created, :updated, :deleted] do
     {:noreply, stream(socket, :tasks, list_tasks(socket.assigns.current_scope), reset: true)}
+  end
+
+  def handle_event("mark-done", %{"task" => task_id}, socket) do
+    _task =
+      case Tasks.get_task!(socket.assigns.current_scope, task_id) do
+        nil ->
+          {:noreply, put_flash(socket, :error, "Error, Task not found")}
+        task ->
+          case Tasks.update_task(socket.assigns.current_scope, task, %{done: :true}) do
+            {:ok, updated_task} ->
+              tasks = Tasks.list_tasks(socket.assigns.current_scope)
+              {:noreply,
+                socket
+                |> assign(:tasks, tasks)
+                |> put_flash(:success, "Task #{updated_task.name} completed!")}
+            {:error, _changeset} -> {socket, :error, "Could not mark this task as done."}
+          end
+      end
   end
 
   defp list_tasks(current_scope) do
