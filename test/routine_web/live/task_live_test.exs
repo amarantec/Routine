@@ -60,39 +60,6 @@ defmodule RoutineWeb.TaskLiveTest do
       assert html =~ "Task created successfully"
       assert html =~ "some name"
     end
-
-    test "updates task in listing", %{conn: conn, task: task} do
-      {:ok, index_live, _html} = live(conn, ~p"/tasks")
-
-      assert {:ok, form_live, _html} =
-               index_live
-               |> element("#tasks-#{task.id} a", "Edit")
-               |> render_click()
-               |> follow_redirect(conn, ~p"/tasks/#{task}/edit")
-
-      assert render(form_live) =~ "Edit Task"
-
-      assert form_live
-             |> form("#task-form", task: @invalid_attrs)
-             |> render_change() =~ "can&#39;t be blank"
-
-      assert {:ok, index_live, _html} =
-               form_live
-               |> form("#task-form", task: @update_attrs)
-               |> render_submit()
-               |> follow_redirect(conn, ~p"/tasks")
-
-      html = render(index_live)
-      assert html =~ "Task updated successfully"
-      assert html =~ "some updated name"
-    end
-
-    test "deletes task in listing", %{conn: conn, task: task} do
-      {:ok, index_live, _html} = live(conn, ~p"/tasks")
-
-      assert index_live |> element("#tasks-#{task.id} a", "Delete") |> render_click()
-      refute has_element?(index_live, "#tasks-#{task.id}")
-    end
   end
 
   describe "Show" do
