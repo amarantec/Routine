@@ -144,4 +144,26 @@ defmodule Routine.Tasks do
 
     Task.changeset(task, attrs, scope)
   end
+
+  def load_tasks_done(%Scope{} = scope) do
+    Repo.all_by(Task, user_id: scope.user.id, done: true)
+  end
+
+  def load_tasks_todo(%Scope{} = scope) do
+    now = NaiveDateTime.local_now()
+
+    Task
+    |> where(user_id: ^scope.user.id, done: false)
+    |> where([t], t.redline > ^now)
+    |> Repo.all()
+  end
+
+  def load_tasks_expired(%Scope{} = scope) do
+    now = NaiveDateTime.local_now()
+
+    Task
+    |> where(user_id: ^scope.user.id, done: false)
+    |> where([t], t.redline < ^now)
+    |> Repo.all()
+  end
 end
