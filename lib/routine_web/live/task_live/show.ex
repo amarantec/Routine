@@ -17,6 +17,12 @@ defmodule RoutineWeb.TaskLive.Show do
           <.button variant="primary" navigate={~p"/tasks/#{@task}/edit?return_to=show"}>
             <.icon name="hero-pencil-square" /> Edit task
           </.button>
+          <.button
+            phx-click={JS.push("delete", value: %{id: @task.id}) |> hide("##{@task.id}")}
+            data-confirm="Are you sure?"
+          >
+            <.icon name="hero-trash" />
+          </.button>
         </:actions>
       </.header>
 
@@ -62,5 +68,15 @@ defmodule RoutineWeb.TaskLive.Show do
   def handle_info({type, %Routine.Tasks.Task{}}, socket)
       when type in [:created, :updated, :deleted] do
     {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => task_id}, socket) do
+    task = Tasks.get_task!(socket.assigns.current_scope, task_id)
+
+    {:ok, _} =
+      Tasks.delete_task(socket.assigns.current_scope, task)
+
+    {:noreply, assign(socket, deleted_task: task)}
   end
 end
