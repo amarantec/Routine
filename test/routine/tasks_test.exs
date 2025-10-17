@@ -118,8 +118,19 @@ defmodule Routine.TasksTest do
     test "load_tasks_todo/1 return all scoped tasks where done is false" do
       scope = user_scope_fixture()
       other_scope = user_scope_fixture()
-      task = task_fixture(scope, %{done: false, redline: NaiveDateTime.add(NaiveDateTime.local_now(), 86,400)})
-      other_task = task_fixture(other_scope, %{done: false, redline: NaiveDateTime.add(NaiveDateTime.local_now(), 86,400)})
+
+      task =
+        task_fixture(scope, %{
+          done: false,
+          redline: NaiveDateTime.add(NaiveDateTime.local_now(), 86, 400)
+        })
+
+      other_task =
+        task_fixture(other_scope, %{
+          done: false,
+          redline: NaiveDateTime.add(NaiveDateTime.local_now(), 86, 400)
+        })
+
       assert Tasks.load_tasks_todo(scope) == [task]
       assert Tasks.load_tasks_todo(other_scope) == [other_task]
     end
@@ -127,8 +138,19 @@ defmodule Routine.TasksTest do
     test "load_tasks_expired/1 return all scoped tasks where done is false and redline has expired" do
       scope = user_scope_fixture()
       other_scope = user_scope_fixture()
-      task = task_fixture(scope, %{done: false, redline: NaiveDateTime.add(NaiveDateTime.local_now(), -86,400)})
-      other_task = task_fixture(other_scope, %{done: false, redline: NaiveDateTime.add(NaiveDateTime.local_now(), -86,400)})
+
+      task =
+        task_fixture(scope, %{
+          done: false,
+          redline: NaiveDateTime.add(NaiveDateTime.local_now(), -86, 400)
+        })
+
+      other_task =
+        task_fixture(other_scope, %{
+          done: false,
+          redline: NaiveDateTime.add(NaiveDateTime.local_now(), -86, 400)
+        })
+
       assert Tasks.load_tasks_expired(scope) == [task]
       assert Tasks.load_tasks_expired(other_scope) == [other_task]
     end
