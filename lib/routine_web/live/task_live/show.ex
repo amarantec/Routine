@@ -30,9 +30,10 @@ defmodule RoutineWeb.TaskLive.Show do
         <:item title="Description">{@task.description}</:item>
         <:item title="Done">{@task.done}</:item>
         <:item title="Redline">{Calendar.strftime(@task.redline, "%H:%M - %d/%m/%Y")}</:item>
+        <:item title="Review">{@task.review}</:item>
       </.list>
 
-      <%= if NaiveDateTime.compare(@task.redline, NaiveDateTime.local_now()) == :lt do %>
+      <%= if NaiveDateTime.compare(@task.redline, NaiveDateTime.local_now()) == :lt and @task.review == "" do %>
         <.form for={@form} id="task-review-form" phx-change="validate_review" phx-submit="save_review">
           <.input field={@form[:review]} type="textarea" label="Review" />
 
