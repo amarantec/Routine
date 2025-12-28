@@ -9,6 +9,7 @@ defmodule Routine.Tasks.Task do
     field :description, :string
     field :done, :boolean, default: false
     field :redline, :naive_datetime_usec
+    field :review, :string
     field :user_id, :binary_id
 
     timestamps(type: :utc_datetime)
