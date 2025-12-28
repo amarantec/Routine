@@ -18,7 +18,7 @@ defmodule Routine.Tasks.Task do
   @doc false
   def changeset(task, attrs, user_scope) do
     task
-    |> cast(attrs, [:name, :description, :done, :redline])
+    |> cast(attrs, [:name, :description, :done, :redline, :review])
     |> validate_required([:name, :description, :done, :redline])
     |> put_change(:user_id, user_scope.user.id)
   end
