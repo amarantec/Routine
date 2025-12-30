@@ -37,7 +37,7 @@ defmodule RoutineWeb.TaskLive.Index do
 
         <div
           id="dropdownMenu"
-          class={"origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-[#fffff2] ring-1 ring-primary ring-opacity-5 focus:outline-none z-50 #{if @dropdown_open, do: "", else: "hidden"}"}
+          class={"origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-primary ring-1 ring-primary ring-opacity-5 focus:outline-none z-50 #{if @dropdown_open, do: "", else: "hidden"}"}
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
@@ -48,7 +48,7 @@ defmodule RoutineWeb.TaskLive.Index do
               href="#"
               phx-click="filter"
               phx-value-status="done"
-              class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+              class="text-white block px-4 py-2 text-sm font-semibold hover:font-extrabold cursor-pointer"
               role="menuitem"
               tabindex="-1"
               id="menu-item-0"
@@ -59,7 +59,7 @@ defmodule RoutineWeb.TaskLive.Index do
               href="#"
               phx-click="filter"
               phx-value-status="todo"
-              class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+              class="text-white block px-4 py-2 text-sm font-semibold hover:font-extrabold cursor-pointer"
               role="menuitem"
               tabindex="-1"
               id="menu-item-1"
@@ -70,7 +70,7 @@ defmodule RoutineWeb.TaskLive.Index do
               href="#"
               phx-click="filter"
               phx-value-status="expired"
-              class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+              class="text-white block px-4 py-2 text-sm font-semibold hover:font-extrabold cursor-pointer"
               role="menuitem"
               tabindex="-1"
               id="menu-item-2"
@@ -81,7 +81,7 @@ defmodule RoutineWeb.TaskLive.Index do
               href="#"
               phx-click="filter"
               phx-value-status="all"
-              class="text-gray-700 block px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
+              class="text-white block px-4 py-2 text-sm font-semibold hover:font-extrabold cursor-pointer"
               role="menuitem"
               tabindex="-1"
               id="menu-item-3"
