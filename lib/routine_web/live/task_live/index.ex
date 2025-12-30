@@ -19,7 +19,6 @@ defmodule RoutineWeb.TaskLive.Index do
         <.button
           variant="primary"
           phx-click="toggle_dropdown"
-          class="inline-flex justify-center w-full rounded-md shadow-sm px-4 py-2 text-sm font-medium"
           aria-haspopup="true"
           aria-expanded={@dropdown_open}
         >
