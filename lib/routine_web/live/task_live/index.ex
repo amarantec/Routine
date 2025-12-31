@@ -91,37 +91,40 @@ defmodule RoutineWeb.TaskLive.Index do
           </div>
         </div>
       </div>
+
       <div class="grid grid-cols-3 gap-5">
         <%= for task <- @tasks do %>
-          <div class={"card border-2 rounded-lg shadow p-5 hover:scale-105 hover:shadow-x1 transition-all duration-300 ease-in-out " <>
-            (if task.done == true, do: "border-green-500", else: (if NaiveDateTime.compare(task.redline, NaiveDateTime.local_now()) == :lt and task.done == false, do: "border-red-600", else: "border-yellow-600"))}>
-            <.link class="text-lg font-semibold hover:font-extrabold" navigate={~p"/tasks/#{task.id}"}>
-              {task.name}
-            </.link>
-            <p class={
-              (if task.done == true, do: "", else: "text-red-600") <> " font-semibold text-sm hover:font-extrabold"}>
-              {Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y")}
-            </p>
-            <p class="text-lg flex items-center font-semibold hover:font-extrabold">
-              Done?
+          <div class="card border-2 border-primary rounded-lg shadow p-5 hover:scale-105 hover:shadow-x1 transition-all duration-300 ease-in-out">
+            <div class="absolute -top-3 right-3 z-10">
               <%= if task.done == true do %>
-                <.icon name="hero-check-circle" class="text-green-500 text-xs ml-2 hover:scale-115" />
+                <.button>
+                  <.icon name="hero-bookmark-square" class="text-xs" />
+                </.button>
               <% else %>
                 <%= if NaiveDateTime.compare(task.redline, NaiveDateTime.local_now()) == :lt do %>
-                  <.icon
-                    name="hero-exclamation-circle"
-                    class="text-red-600 text-xs ml-2 hover:scale-115"
-                  />
-                <% else %>
-                  <.link phx-click="mark-done" phx-value-task={task.id}>
+                  <.button>
                     <.icon
-                      name="hero-minus-circle"
-                      class="text-yellow-600 text-xs ml-2 hover:scale-115"
+                      name="hero-exclamation-triangle"
+                      class="text-xs"
                     />
-                  </.link>
+                  </.button>
+                <% else %>
+                  <.button phx-click="mark_done" phx-value-task={task.id}>
+                    <.icon
+                      name="hero-bookmark"
+                      class="text-xs"
+                    />
+                  </.button>
                 <% end %>
               <% end %>
-            </p>
+            </div>
+            <div class="flex justify-between items-start mb-4 pt-2">
+              <.link navigate={~p"/tasks/#{task.id}"} class="flex-1 text-x1 font-bold">
+                {task.name}
+              </.link>
+            </div>
+            <p>{Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y")}</p>
+            <div class="flex-1"></div>
           </div>
         <% end %>
       </div>
@@ -157,7 +160,7 @@ defmodule RoutineWeb.TaskLive.Index do
     {:noreply, stream(socket, :tasks, list_tasks(socket.assigns.current_scope), reset: true)}
   end
 
-  def handle_event("mark-done", %{"task" => task_id}, socket) do
+  def handle_event("mark_done", %{"task" => task_id}, socket) do
     _task =
       case Tasks.get_task!(socket.assigns.current_scope, task_id) do
         nil ->
