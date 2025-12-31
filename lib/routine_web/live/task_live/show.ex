@@ -18,24 +18,24 @@ defmodule RoutineWeb.TaskLive.Show do
             <.icon name="hero-pencil-square" /> Edit task
           </.button>
           <%= if @task.done == true do %>
-          <.button>
-            <.icon name="hero-check-circle" class="text-xs" />
-          </.button>
+            <.button>
+              <.icon name="hero-bookmark-square" class="text-xs" />
+            </.button>
           <% else %>
             <%= if NaiveDateTime.compare(@task.redline, NaiveDateTime.local_now()) == :lt do %>
-                <.button>
-                  <.icon
-                    name="hero-exclamation-circle"
-                    class="text-xs"
-                  />
-                </.button>
+              <.button>
+                <.icon
+                  name="hero-exclamation-triangle"
+                  class="text-xs"
+                />
+              </.button>
             <% else %>
-                <.button>
-                  <.icon
-                    name="hero-minus-circle"
-                    class="text-xs"
-                  />
-                </.button>
+              <.button phx-click="mark_done" phx-value-task={@task.id}>
+                <.icon
+                  name="hero-bookmark"
+                  class="text-xs"
+                />
+              </.button>
             <% end %>
           <% end %>
           <.button
@@ -54,14 +54,24 @@ defmodule RoutineWeb.TaskLive.Show do
         <:item title="Review">{@task.review}</:item>
       </.list>
 
-      <%= if NaiveDateTime.compare(@task.redline, NaiveDateTime.local_now()) == :lt and @task.review == "" do %>
-        <.form for={@form} id="task-review-form" phx-change="validate_review" phx-submit="save_review">
-          <.input field={@form[:review]} type="textarea" label="Review" />
-
-          <div class="mt-4">
-            <.button type="submit" variant="primary">Save review</.button>
+      <%= if NaiveDateTime.compare(@task.redline, NaiveDateTime.local_now()) == :lt or @task.done == true do %>
+        <%= if @task.review != "" and @task.review != nil do %>
+          <div class="p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+            Review already submitted!
           </div>
-        </.form>
+        <% else %>
+          <.form
+            for={@form}
+            id="task-review-form"
+            phx-change="validate_review"
+            phx-submit="save_review"
+          >
+            <.input field={@form[:review]} type="textarea" label="Review" />
+            <div class="mt-4">
+              <.button type="submit" variant="primary">Save review</.button>
+            </div>
+          </.form>
+        <% end %>
       <% end %>
     </Layouts.app>
     """
@@ -79,7 +89,7 @@ defmodule RoutineWeb.TaskLive.Show do
      socket
      |> assign(:page_title, "Show Task")
      |> assign(:task, task)
-     |> apply_action(socket.assigns.live_action, task)}
+     |> apply_action(socket.assigns.live_action)}
   end
 
   @impl true
@@ -115,11 +125,13 @@ defmodule RoutineWeb.TaskLive.Show do
     {:noreply, assign(socket, deleted_task: task)}
   end
 
-  defp apply_action(socket, :show, task) do
+  defp apply_action(socket, :show) do
     socket
     |> assign(:page_title, "Show Task")
-    |> assign(:task, task)
-    |> assign(:form, to_form(Tasks.change_task(socket.assigns.current_scope, task)))
+    |> assign(
+      :form,
+      to_form(Tasks.change_task(socket.assigns.current_scope, socket.assigns.task))
+    )
   end
 
   defp apply_action(socket, :edit, task) do
@@ -127,6 +139,24 @@ defmodule RoutineWeb.TaskLive.Show do
     |> assign(:page_title, "Submit a Review")
     |> assign(:task, task)
     |> assign(:form, to_form(Tasks.change_task(socket.assigns.current_scope, task)))
+  end
+
+  def handle_event("mark_done", %{"task" => task_id}, socket) do
+    task = Tasks.get_task!(socket.assigns.current_scope, task_id)
+
+    cond do
+      NaiveDateTime.compare(task.redline, NaiveDateTime.local_now()) == :lt ->
+        {:noreply, put_flash(socket, :error, "Task has expired")}
+
+      true ->
+        case Tasks.update_task(socket.assigns.current_scope, task, %{done: true}) do
+          {:ok, _task} ->
+            {:noreply, put_flash(socket, :success, "Task completed")}
+
+          {:error, _changeset} ->
+            {:noreply, put_flash(socket, :error, "Could not mark this task as done")}
+        end
+    end
   end
 
   def handle_event("validate_review", %{"task" => review_params}, socket) do
@@ -142,21 +172,6 @@ defmodule RoutineWeb.TaskLive.Show do
          |> put_flash(:info, "Review submitted successfully")
          |> assign(:task, task)
          |> assign(:form, to_form(Tasks.change_task(socket.assigns.current_scope, task)))}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, form: to_form(changeset))}
-    end
-  end
-
-  defp review_task(socket, :edit, task_params) do
-    case Tasks.update_task(socket.assigns.current_scope, socket.assigns.task, task_params) do
-      {:ok, task} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Review submited successfully")
-         |> push_navigate(
-           to: return_path(socket.assigns.current_scope, socket.assigns.return_to, task)
-         )}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, form: to_form(changeset))}
