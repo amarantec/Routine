@@ -17,6 +17,27 @@ defmodule RoutineWeb.TaskLive.Show do
           <.button variant="primary" navigate={~p"/tasks/#{@task}/edit?return_to=show"}>
             <.icon name="hero-pencil-square" /> Edit task
           </.button>
+          <%= if @task.done == true do %>
+          <.button>
+            <.icon name="hero-check-circle" class="text-xs" />
+          </.button>
+          <% else %>
+            <%= if NaiveDateTime.compare(@task.redline, NaiveDateTime.local_now()) == :lt do %>
+                <.button>
+                  <.icon
+                    name="hero-exclamation-circle"
+                    class="text-xs"
+                  />
+                </.button>
+            <% else %>
+                <.button>
+                  <.icon
+                    name="hero-minus-circle"
+                    class="text-xs"
+                  />
+                </.button>
+            <% end %>
+          <% end %>
           <.button
             phx-click={JS.push("delete", value: %{id: @task.id}) |> hide("##{@task.id}")}
             data-confirm="Are you sure?"
