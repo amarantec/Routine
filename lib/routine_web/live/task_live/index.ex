@@ -93,20 +93,31 @@ defmodule RoutineWeb.TaskLive.Index do
       </div>
       <div class="grid grid-cols-3 gap-5">
         <%= for task <- @tasks do %>
-          <div class={"card border-2 rounded-lg shadow p-5 " <>
+          <div class={"card border-2 rounded-lg shadow p-5 hover:scale-105 hover:shadow-x1 transition-all duration-300 ease-in-out " <>
             (if task.done == true, do: "border-green-500", else: (if NaiveDateTime.compare(task.redline, NaiveDateTime.local_now()) == :lt and task.done == false, do: "border-red-600", else: "border-yellow-600"))}>
-            <.link class="text-lg" navigate={~p"/tasks/#{task.id}"}>{task.name}</.link>
-            <p class="text-red-400 text-sm">{Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y")}</p>
-            <p class="text-lg flex items-center">
+            <.link class="text-lg font-semibold hover:font-extrabold" navigate={~p"/tasks/#{task.id}"}>
+              {task.name}
+            </.link>
+            <p class={
+              (if task.done == true, do: "", else: "text-red-600") <> " font-semibold text-sm hover:font-extrabold"}>
+              {Calendar.strftime(task.redline, "%H:%M - %d/%m/%Y")}
+            </p>
+            <p class="text-lg flex items-center font-semibold hover:font-extrabold">
               Done?
               <%= if task.done == true do %>
-                <.icon name="hero-check-circle" class="text-green-500 text-xs ml-2" />
+                <.icon name="hero-check-circle" class="text-green-500 text-xs ml-2 hover:scale-115" />
               <% else %>
                 <%= if NaiveDateTime.compare(task.redline, NaiveDateTime.local_now()) == :lt do %>
-                  <.icon name="hero-exclamation-circle" class="text-red-600 text-xs ml-2" />
+                  <.icon
+                    name="hero-exclamation-circle"
+                    class="text-red-600 text-xs ml-2 hover:scale-115"
+                  />
                 <% else %>
                   <.link phx-click="mark-done" phx-value-task={task.id}>
-                    <.icon name="hero-minus-circle" class="text-yellow-600 text-xs ml-2" />
+                    <.icon
+                      name="hero-minus-circle"
+                      class="text-yellow-600 text-xs ml-2 hover:scale-115"
+                    />
                   </.link>
                 <% end %>
               <% end %>
