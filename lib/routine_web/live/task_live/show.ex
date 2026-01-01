@@ -14,9 +14,11 @@ defmodule RoutineWeb.TaskLive.Show do
           <.button navigate={~p"/tasks"}>
             <.icon name="hero-arrow-left" />
           </.button>
-          <.button variant="primary" navigate={~p"/tasks/#{@task}/edit?return_to=show"}>
-            <.icon name="hero-pencil-square" /> Edit task
-          </.button>
+          <%= unless NaiveDateTime.compare(@task.redline, NaiveDateTime.local_now()) == :lt or @task.done == true do %>
+            <.button variant="primary" navigate={~p"/tasks/#{@task}/edit?return_to=show"}>
+              <.icon name="hero-pencil-square" /> Edit task
+            </.button>
+          <% end %>
           <%= if @task.done == true do %>
             <.button>
               <.icon name="hero-bookmark-square" class="text-xs" />

@@ -96,9 +96,11 @@ defmodule RoutineWeb.TaskLive.Index do
         <%= for task <- @tasks do %>
           <div class="card border-2 border-primary rounded-lg shadow p-5 hover:scale-105 hover:shadow-x1 transition-all duration-300 ease-in-out">
             <div class="absolute -top-3 right-3 z-10">
-              <.button navigate={~p"/tasks/#{task.id}/edit"}>
-                <.icon name="hero-pencil-square" class="text-xs" />
-              </.button>
+              <%= unless NaiveDateTime.compare(task.redline, NaiveDateTime.local_now()) == :lt or task.done == true do %>
+                <.button navigate={~p"/tasks/#{task.id}/edit"}>
+                  <.icon name="hero-pencil-square" class="text-xs" />
+                </.button>
+              <% end %>
               <%= if task.done == true do %>
                 <.button>
                   <.icon name="hero-bookmark-square" class="text-xs" />
