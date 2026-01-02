@@ -72,7 +72,16 @@ defmodule RoutineWeb.TaskLiveTest do
       assert html =~ task.name
     end
 
-    test "updates task and returns to show", %{conn: conn, task: task} do
+    test "updates task and returns to show", %{conn: conn, task: task, scope: scope} do
+      future_redline = NaiveDateTime.add(NaiveDateTime.local_now(), 3600, :second)
+
+      task_attrs =
+        @create_attrs
+        |> Map.put(:redline, future_redline)
+        |> Map.put(:done, false)
+
+      task = task_fixture(scope, task_attrs)
+
       {:ok, show_live, _html} = live(conn, ~p"/tasks/#{task}")
 
       assert {:ok, form_live, _} =
